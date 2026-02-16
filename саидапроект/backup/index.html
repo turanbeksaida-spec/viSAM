@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISA - Управление документами</title>
+    <meta name="description" content="Приложение для управления документами VISA и отслеживания заявлений">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0052cc">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="VISA">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Screen 1: Home -->
+    <div id="screen-home" class="screen active">
+        <div class="container">
+            <!-- Settings Button (Three Dots) -->
+            <button class="settings-btn" onclick="toggleSettings()" aria-label="Settings" title="Настройки">
+                <span class="settings-icon">⋮</span>
+            </button>
+
+            <!-- VISA Logo Header -->
+            <div class="visa-logo" onclick="openScanner()">
+                <h1>VISA</h1>
+            </div>
+
+            <!-- Main Menu -->
+            <nav class="main-menu">
+                <button class="menu-item" onclick="showScreen('screen-documents')">
+                    <span class="menu-icon">🇷🇺</span>
+                    <span class="menu-text" data-i18n="menu_docs">Список документов</span>
+                    <span class="menu-arrow">›</span>
+                </button>
+
+                <button class="menu-item" onclick="showScreen('screen-help')">
+                    <span class="menu-icon">✉️</span>
+                    <span class="menu-text" data-i18n="menu_help">Помощь</span>
+                    <span class="menu-arrow">›</span>
+                </button>
+
+                <button class="menu-item" onclick="showScreen('screen-profile')">
+                    <span class="menu-icon">👤</span>
+                    <span class="menu-text" data-i18n="menu_profile">Мой профиль</span>
+                    <span class="menu-arrow">›</span>
+                </button>
+
+                <button class="menu-item">
+                    <span class="menu-icon">📅</span>
+                    <span class="menu-text" data-i18n="menu_apply">Записаться на подачу</span>
+                    <span class="menu-arrow">›</span>
+                </button>
+            </nav>
+
+            <!-- Additional Info Section -->
+            <div class="additional-section">
+                <h3 data-i18n="home_add_title">Дополнительно</h3>
+                <p class="info-text" data-i18n="home_add_text">Помощь и переводчик</p>
+                <p class="info-text-small" data-i18n="home_add_hint">Удобно в использовании</p>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-screen="screen-home">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label" data-i18n="nav_search">Поиск</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-documents">
+                <span class="nav-icon">📄</span>
+                <span class="nav-label" data-i18n="nav_docs">Документы</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label" data-i18n="nav_account">Аккаунт</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Screen 2: Scan Documents -->
+    <div id="screen-scan" class="screen">
+        <div class="container dark-theme">
+            <div class="scan-container">
+                <div class="scan-preview">
+                    <div class="scan-frame">
+                        <div class="scan-placeholder">
+                            <p data-i18n="scan_hint">Наведите камеру на документ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-screen="screen-home">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Поиск</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-documents">
+                <span class="nav-icon">📄</span>
+                <span class="nav-label">Документы</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Аккаунт</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Screen: AI Scanner -->
+    <div id="screen-ai-scanner" class="screen">
+        <div class="container">
+            <!-- Header with Back Button -->
+            <header class="screen-header">
+                <button class="back-btn" onclick="showScreen('screen-home')">
+                    <span>←</span>
+                </button>
+                <h2 class="screen-title" data-i18n="scanner_title">AI Сканер Документов</h2>
+            </header>
+
+            <!-- Visa Type Selection -->
+            <div class="scanner-section">
+                <h3 class="section-title" data-i18n="visa_type">Тип визы</h3>
+                <div class="visa-type-selector">
+                    <button class="visa-type-btn" data-type="tourist" onclick="selectVisaType('tourist')">
+                        <span class="visa-icon">✈️</span>
+                        <span class="visa-label" data-i18n="visa_tourist">Туристическая</span>
+                    </button>
+                    <button class="visa-type-btn" data-type="work" onclick="selectVisaType('work')">
+                        <span class="visa-icon">💼</span>
+                        <span class="visa-label" data-i18n="visa_work">Рабочая</span>
+                    </button>
+                    <button class="visa-type-btn" data-type="student" onclick="selectVisaType('student')">
+                        <span class="visa-icon">🎓</span>
+                        <span class="visa-label" data-i18n="visa_student">Студенческая</span>
+                    </button>
+                    <button class="visa-type-btn" data-type="business" onclick="selectVisaType('business')">
+                        <span class="visa-icon">🏢</span>
+                        <span class="visa-label" data-i18n="visa_business">Бизнес</span>
+                    </button>
+                    <button class="visa-type-btn" data-type="transit" onclick="selectVisaType('transit')">
+                        <span class="visa-icon">🚆</span>
+                        <span class="visa-label" data-i18n="visa_transit">Транзитная</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Country Selection -->
+            <div class="scanner-section">
+                <h3 class="section-title" data-i18n="dest_country">Страна назначения</h3>
+                <div class="country-selector">
+                    <button class="country-btn" data-country="usa" onclick="selectCountry('usa')">
+                        <span class="country-flag">🇺🇸</span>
+                        <span class="country-name" data-i18n="country_usa">США</span>
+                    </button>
+                    <button class="country-btn" data-country="uk" onclick="selectCountry('uk')">
+                        <span class="country-flag">🇬🇧</span>
+                        <span class="country-name" data-i18n="country_uk">Великобритания</span>
+                    </button>
+                    <button class="country-btn" data-country="germany" onclick="selectCountry('germany')">
+                        <span class="country-flag">🇩🇪</span>
+                        <span class="country-name" data-i18n="country_germany">Германия</span>
+                    </button>
+                    <button class="country-btn" data-country="france" onclick="selectCountry('france')">
+                        <span class="country-flag">🇫🇷</span>
+                        <span class="country-name" data-i18n="country_france">Франция</span>
+                    </button>
+                    <button class="country-btn" data-country="canada" onclick="selectCountry('canada')">
+                        <span class="country-flag">🇨🇦</span>
+                        <span class="country-name" data-i18n="country_canada">Канада</span>
+                    </button>
+                    <button class="country-btn" data-country="japan" onclick="selectCountry('japan')">
+                        <span class="country-flag">🇯🇵</span>
+                        <span class="country-name" data-i18n="country_japan">Япония</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Document Upload -->
+            <div class="scanner-section">
+                <h3 class="section-title" data-i18n="upload_doc">Загрузить документ</h3>
+                <div class="document-upload-area" id="upload-area">
+                    <input type="file" id="document-input" accept="image/*,.pdf" style="display: none;"
+                        onchange="handleFileSelect(event)">
+                    <div class="upload-placeholder" onclick="document.getElementById('document-input').click()">
+                        <span class="upload-icon">📎</span>
+                        <p class="upload-text" data-i18n="upload_click">Нажмите для загрузки документа</p>
+                        <p class="upload-hint" data-i18n="upload_camera">или используйте камеру</p>
+                    </div>
+                    <div class="uploaded-preview" id="uploaded-preview" style="display: none;">
+                        <img id="preview-image" src="" alt="Предпросмотр">
+                        <button class="remove-btn" onclick="removeDocument()">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scan Button -->
+            <button class="scan-action-btn" id="scan-btn" onclick="scanDocument()" disabled>
+                <span class="scan-btn-icon">🔍</span>
+                <span class="scan-btn-text" data-i18n="btn_scan">Сканировать документ</span>
+            </button>
+
+            <!-- Loading State -->
+            <div class="scanning-loader" id="scanning-loader" style="display: none;">
+                <div class="loader-spinner"></div>
+                <p class="loader-text" data-i18n="ai_analyzing">AI анализирует документ...</p>
+            </div>
+
+            <!-- Scan Results -->
+            <div class="scan-results" id="scan-results" style="display: none;">
+                <!-- Status Badge -->
+                <div class="result-status" id="result-status">
+                    <span class="status-badge" id="status-badge"></span>
+                    <span class="status-text" id="status-text"></span>
+                </div>
+
+                <!-- Found Issues -->
+                <div class="issues-section" id="issues-section">
+                    <h4 class="result-title" data-i18n="found_issues">Найденные проблемы</h4>
+                    <ul class="issues-list" id="issues-list">
+                        <!-- Issues will be dynamically added here -->
+                    </ul>
+                </div>
+
+                <!-- Requirements for Selected Country -->
+                <div class="requirements-section" id="requirements-section">
+                    <h4 class="result-title"><span data-i18n="req_for">Требования для</span> <span
+                            id="selected-country-name"></span></h4>
+                    <ul class="requirements-list" id="requirements-list">
+                        <!-- Requirements will be dynamically added here -->
+                    </ul>
+                </div>
+
+                <!-- Missing Documents -->
+                <div class="missing-docs-section" id="missing-docs-section">
+                    <h4 class="result-title" data-i18n="missing_docs">Недостающие документы</h4>
+                    <ul class="missing-docs-list" id="missing-docs-list">
+                        <!-- Missing docs will be dynamically added here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-screen="screen-home">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Поиск</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-documents">
+                <span class="nav-icon">📄</span>
+                <span class="nav-label">Документы</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Аккаунт</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Screen 3: Documents List -->
+    <div id="screen-documents" class="screen">
+        <div class="container">
+            <!-- World Map Header -->
+            <div class="world-map">
+                <div class="map-placeholder">
+                    <svg viewBox="0 0 400 200" class="world-map-svg">
+                        <path d="M50,100 Q100,80 150,100 T250,100 T350,100" fill="none" stroke="rgba(255,255,255,0.3)"
+                            stroke-width="1" />
+                        <circle cx="100" cy="90" r="3" fill="rgba(255,255,255,0.5)" />
+                        <circle cx="200" cy="100" r="3" fill="rgba(255,255,255,0.5)" />
+                        <circle cx="300" cy="95" r="3" fill="rgba(255,255,255,0.5)" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Document Type Header -->
+            <div class="document-header">
+                <span class="flag-icon">🇷🇺</span>
+                <h2 data-i18n="docs_list_title">Список документов</h2>
+            </div>
+
+            <!-- Document List -->
+            <div class="document-list">
+                <div class="document-item">
+                    <div class="document-content">
+                        <h4 data-i18n="doc_req_visa">Требования к документам на визу</h4>
+                    </div>
+                    <button class="document-action" aria-label="Upload">
+                        <span class="action-icon">⬆️</span>
+                    </button>
+                </div>
+
+                <div class="document-item">
+                    <div class="document-content">
+                        <h4 data-i18n="doc_temp_id">Временное удостоверение личности</h4>
+                    </div>
+                    <button class="document-action" aria-label="Upload">
+                        <span class="action-icon">⬆️</span>
+                    </button>
+                </div>
+
+                <div class="document-item">
+                    <div class="document-content">
+                        <h4 data-i18n="doc_sent">Отправленные документы</h4>
+                    </div>
+                    <button class="document-action" aria-label="Upload">
+                        <span class="action-icon">⬆️</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-screen="screen-home">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Поиск</span>
+            </button>
+            <button class="nav-btn active" data-screen="screen-documents">
+                <span class="nav-icon">📄</span>
+                <span class="nav-label">Документы</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Аккаунт</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Screen 4: Help -->
+    <div id="screen-help" class="screen">
+        <div class="container">
+            <!-- Header with Back Button -->
+            <header class="screen-header">
+                <button class="back-btn" onclick="showScreen('screen-home')">
+                    <span>←</span>
+                </button>
+                <h2 class="screen-title" data-i18n="help_title">Помощь</h2>
+            </header>
+
+            <!-- Help Items List -->
+            <div class="help-list">
+                <div class="help-item">
+                    <div class="help-icon">📄</div>
+                    <div class="help-content">
+                        <p data-i18n="help_item_1">Типы документов для визы</p>
+                    </div>
+                    <button class="help-action" aria-label="View">
+                        <span class="action-icon">›</span>
+                    </button>
+                </div>
+
+                <div class="help-item">
+                    <div class="help-icon">📄</div>
+                    <div class="help-content">
+                        <p data-i18n="help_item_2">Правила оформления документов</p>
+                    </div>
+                    <button class="help-action" aria-label="View">
+                        <span class="action-icon">›</span>
+                    </button>
+                </div>
+
+                <div class="help-item">
+                    <div class="help-icon">📄</div>
+                    <div class="help-content">
+                        <p data-i18n="help_item_3">Инструкция по заполнению</p>
+                    </div>
+                    <button class="help-action" aria-label="View">
+                        <span class="action-icon">›</span>
+                    </button>
+                </div>
+
+                <div class="help-item">
+                    <div class="help-icon">📄</div>
+                    <div class="help-content">
+                        <p data-i18n="help_item_4">Загрузка совместных документов</p>
+                    </div>
+                    <button class="help-action" aria-label="View">
+                        <span class="action-icon">›</span>
+                    </button>
+                </div>
+
+                <div class="help-item">
+                    <div class="help-icon">📄</div>
+                    <div class="help-content">
+                        <p data-i18n="help_item_5">Связь с поддержкой</p>
+                    </div>
+                    <button class="help-action" aria-label="View">
+                        <span class="action-icon">›</span>
+                    </button>
+                </div>
+
+                <div class="help-item">
+                    <div class="help-icon">📄</div>
+                    <div class="help-content">
+                        <p data-i18n="help_item_6">Регистрация и подача</p>
+                    </div>
+                    <button class="help-action" aria-label="View">
+                        <span class="action-icon">›</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-preview">
+                    <div class="chat-avatar">👤</div>
+                    <div class="chat-message">
+                        <p class="chat-text" data-i18n="chat_welcome">Вам нужна помощь нашей команды?</p>
+                        <p class="chat-time">16:30</p>
+                    </div>
+                </div>
+                <button class="chat-link" onclick="showScreen('screen-ai-chat')" data-i18n="chat_start">Написать
+                    сообщение...</button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-screen="screen-home">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Поиск</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-documents">
+                <span class="nav-icon">📄</span>
+                <span class="nav-label">Документы</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Аккаунт</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Screen 5: Profile -->
+    <div id="screen-profile" class="screen">
+        <div class="container">
+            <!-- Header with Back Button -->
+            <header class="screen-header">
+                <button class="back-btn" onclick="showScreen('screen-home')">
+                    <span>←</span>
+                </button>
+                <h2 class="screen-title" data-i18n="profile_title">Мой профиль</h2>
+            </header>
+
+            <!-- Profile Form -->
+            <form class="profile-form">
+                <div class="form-group">
+                    <label for="name" data-i18n="label_name">Имя</label>
+                    <input type="text" id="name" name="name" placeholder="">
+                </div>
+
+                <div class="form-group">
+                    <label for="email" data-i18n="label_email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" data-i18n="label_phone">Номер телефон</label>
+                    <input type="tel" id="phone" name="phone" placeholder="">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" data-i18n="label_password">Пароль</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="password" name="password" placeholder="">
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" class="primary-btn" onclick="saveProfile()" data-i18n="btn_save">
+                    Сохранить изменения
+                </button>
+            </form>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-screen="screen-home">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Поиск</span>
+            </button>
+            <button class="nav-btn" data-screen="screen-documents">
+                <span class="nav-icon">📄</span>
+                <span class="nav-label">Документы</span>
+            </button>
+            <button class="nav-btn active" data-screen="screen-profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Аккаунт</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2 data-i18n="settings_title">Настройки</h2>
+                <button class="close-settings-btn" onclick="toggleSettings()">✕</button>
+            </div>
+
+            <div class="settings-body">
+                <!-- Language Selection -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings_lang">🌐 Смена языка</h3>
+                    <p class="settings-description" data-i18n="lang_desc">Выберите язык интерфейса</p>
+                    <div class="language-selector">
+                        <button class="language-btn active" data-lang="ru" onclick="changeLanguage('ru')">
+                            <span class="lang-flag">🇷🇺</span>
+                            <span class="lang-name">Русский</span>
+                        </button>
+                        <button class="language-btn" data-lang="en" onclick="changeLanguage('en')">
+                            <span class="lang-flag">🇬🇧</span>
+                            <span class="lang-name">English</span>
+                        </button>
+                        <button class="language-btn" data-lang="es" onclick="changeLanguage('es')">
+                            <span class="lang-flag">🇪🇸</span>
+                            <span class="lang-name">Español</span>
+                        </button>
+                        <button class="language-btn" data-lang="fr" onclick="changeLanguage('fr')">
+                            <span class="lang-flag">🇫🇷</span>
+                            <span class="lang-name">Français</span>
+                        </button>
+                        <button class="language-btn" data-lang="de" onclick="changeLanguage('de')">
+                            <span class="lang-flag">🇩🇪</span>
+                            <span class="lang-name">Deutsch</span>
+                        </button>
+                        <button class="language-btn" data-lang="zh" onclick="changeLanguage('zh')">
+                            <span class="lang-flag">🇨🇳</span>
+                            <span class="lang-name">中文</span>
+                        </button>
+                        <button class="language-btn" data-lang="ar" onclick="changeLanguage('ar')">
+                            <span class="lang-flag">🇸🇦</span>
+                            <span class="lang-name">العربية</span>
+                        </button>
+                        <button class="language-btn" data-lang="hi" onclick="changeLanguage('hi')">
+                            <span class="lang-flag">🇮🇳</span>
+                            <span class="lang-name">हिन्दी</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dark Theme Toggle -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings_dark">🌙 Темная тема</h3>
+                    <p class="settings-description" data-i18n="dark_theme_desc">Полезно для ночного заполнения анкет</p>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="dark-theme-toggle" onchange="toggleDarkTheme()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label" id="dark-theme-label">Выключено</span>
+                    </div>
+                </div>
+
+                <!-- Notifications Toggle -->
+                <div class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings_notify">🔔 Уведомления</h3>
+                    <p class="settings-description" data-i18n="notifications_desc">Получайте уведомления о статусе вашей
+                        визы</p>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notifications-toggle" onchange="toggleNotifications()" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label" id="notifications-label">Включено</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 6: AI Chat Assistant -->
+    <div id="screen-ai-chat" class="screen">
+        <div class="container chat-container-full">
+            <!-- Header with Back Button -->
+            <header class="screen-header chat-header">
+                <button class="back-btn" onclick="showScreen('screen-help')">
+                    <span>←</span>
+                </button>
+                <div class="header-info">
+                    <h2 class="screen-title" data-i18n="ai_assistant_title">ИИ Помощник</h2>
+                    <span class="status-online" data-i18n="status_online">в сети</span>
+                </div>
+            </header>
+
+            <!-- Chat Messages Area -->
+            <div id="chat-messages" class="chat-messages">
+                <div class="message ai-message">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <p data-i18n="chat_welcome_ai">Здравствуйте! Я ваш ИИ-помощник по вопросам виз. Чем я могу вам
+                            помочь сегодня?</p>
+                        <span class="message-time">16:45</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <input type="text" id="chat-user-input" placeholder="Введите сообщение..."
+                        data-i18n="chat_input_placeholder">
+                    <button id="chat-send-btn" class="send-btn" onclick="handleSendMessage()">
+                        <span class="send-icon">➤</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

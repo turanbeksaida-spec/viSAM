@@ -1,0 +1,110 @@
+/**
+ * Theme Styles - Multiple Color Themes
+ * Provides 6 different color themes for the application
+ */
+
+/* Unified Theme System */
+
+/* Dark Theme */
+body.theme-dark {
+    --visa-blue-h: 217;
+    --visa-blue-s: 100%;
+    --visa-blue-l: 60%;
+    /* Brighter on dark bg */
+    --bg-primary: #000000;
+    --bg-card: rgba(28, 28, 30, 0.8);
+    --text-primary: #F5F5F7;
+    --text-secondary: #86868B;
+    --text-light: #48484A;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --glass-bg: rgba(28, 28, 30, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Blue Theme (Professional) */
+body.theme-blue {
+    --visa-blue-h: 210;
+    --visa-blue-s: 100%;
+    --visa-blue-l: 45%;
+    --bg-primary: #EEF7FF;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --accent-gold: #FFC107;
+}
+
+/* Green Theme (Natural) */
+body.theme-green {
+    --visa-blue-h: 145;
+    --visa-blue-s: 65%;
+    --visa-blue-l: 40%;
+    --bg-primary: #F0F9F1;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --accent-gold: #FFD54F;
+}
+
+/* Purple Theme (Creative) */
+body.theme-purple {
+    --visa-blue-h: 270;
+    --visa-blue-s: 65%;
+    --visa-blue-l: 50%;
+    --bg-primary: #F7F0FA;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --accent-gold: #FFB74D;
+}
+
+/* Orange Theme (Energetic) */
+body.theme-orange {
+    --visa-blue-h: 25;
+    --visa-blue-s: 90%;
+    --visa-blue-l: 50%;
+    --bg-primary: #FFF8EE;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --accent-gold: #FFA726;
+}
+
+/* High Contrast Theme */
+body.theme-contrast {
+    --visa-blue-h: 240;
+    --visa-blue-s: 100%;
+    --visa-blue-l: 50%;
+    --bg-primary: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --text-primary: #000000;
+    --text-secondary: #000000;
+    --text-light: #222222;
+    --border-color: #000000;
+    --glass-bg: rgba(255, 255, 255, 1);
+    --glass-border: #000000;
+    --shadow-soft: none;
+    --blur: 0px;
+}
+
+body.theme-contrast * {
+    font-weight: 500 !important;
+}
+
+body.theme-contrast .glass-card {
+    border: 2px solid #000000;
+}
+
+/* Theme transition */
+body {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+/* Auto theme based on system preference */
+@media (prefers-color-scheme: dark) {
+    body.theme-auto {
+        --visa-blue-h: 217;
+        --visa-blue-s: 100%;
+        --visa-blue-l: 60%;
+        --bg-primary: #000000;
+        --bg-card: rgba(28, 28, 30, 0.8);
+        --text-primary: #F5F5F7;
+        --text-secondary: #86868B;
+        --text-light: #48484A;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --glass-bg: rgba(28, 28, 30, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+}
